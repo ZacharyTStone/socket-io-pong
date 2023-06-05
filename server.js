@@ -1,16 +1,14 @@
-const server = require("http").createServer();
-const io = require("socket.io")(server);
+const http = require("http");
+const io = require("socket.io");
+
+const apiServer = require("./api");
+const httpServer = http.createServer(apiServer);
+const socketServer = io(httpServer);
+
+const sockets = require("./sockets");
 
 const PORT = 3000;
+httpServer.listen(PORT);
+console.log(`Listening on port ${PORT}...`);
 
-server.listen(PORT);
-
-console.log(`Server listening on port ${PORT}`);
-
-io.on("connection", (socket) => {
-  console.log("Client connected");
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
-});
+sockets.listen(socketServer);
